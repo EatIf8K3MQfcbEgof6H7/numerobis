@@ -45,6 +45,7 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 
+import io.github.mletkin.numerobis.annotation.GenerateBuilder;
 import io.github.mletkin.numerobis.annotation.Ignore;
 import io.github.mletkin.numerobis.annotation.Immutable;
 import io.github.mletkin.numerobis.annotation.Mutable;
@@ -95,6 +96,7 @@ public class BuilderGenerator {
         this.builderUnit = productUnit;
         separateClass = false;
         createInternalBuilderClass();
+        removeGenerateBuilderAnnotation();
         return this;
     }
 
@@ -143,7 +145,7 @@ public class BuilderGenerator {
     private void createInternalBuilderClass() {
         this.builderclass = allMember(productclass, ClassOrInterfaceDeclaration.class) //
                 .filter(c -> c.getNameAsString().equals(naming.builderClassPostfix())) //
-                .findFirst() //
+                .findFirst()  //
                 .orElseGet(this::newInternalBuilderClass);
     }
 
@@ -151,6 +153,11 @@ public class BuilderGenerator {
         ClassOrInterfaceDeclaration memberClass = GenerationUtil.newMemberClass(naming.builderClassPostfix());
         productclass.getMembers().add(memberClass);
         return memberClass;
+    }
+
+    private void removeGenerateBuilderAnnotation(){
+        if (productclass.isAnnotationPresent(GenerateBuilder.class))
+            productclass.getAnnotations().remove(productclass.getAnnotationByClass(GenerateBuilder.class).get());
     }
 
     /**
@@ -352,7 +359,7 @@ public class BuilderGenerator {
     }
 
     private Stream<MutatorMethodDescriptor> mutatorDescriptors(ListMutatorVariant[] mutatorVariants,
-            FieldDeclaration fd) {
+                                                               FieldDeclaration fd) {
         return ClassUtil.isCollection(fd, productUnit) //
                 ? new ListMutatorDescriptorGenerator(fd, mutatorVariants, naming.mutatorPrefix()).stream()
                 : new MutatorDescriptorGenerator(fd, naming.mutatorPrefix()).stream();

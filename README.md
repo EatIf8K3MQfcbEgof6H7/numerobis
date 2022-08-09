@@ -1,3 +1,6 @@
+[![Java CI with Maven](https://github.com/EatIf8K3MQfcbEgof6H7/numerobis/actions/workflows/maven.yml/badge.svg?branch=master)](https://github.com/EatIf8K3MQfcbEgof6H7/numerobis/actions/workflows/maven.yml)
+
+
 # Maven Builder Generator Plugin (Version 2.3)
 This is a simple maven plugin that generates builder classes for classes that have the appropriate annotation. The builders are generated during the generate-sources phase of the maven build. The current version is restricted to the use of default settings. Customization is currently in a proof of concept state.
 
